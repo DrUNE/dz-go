@@ -1,6 +1,8 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+)
 
 const (
 	usd_to_eur = 0.878
@@ -10,4 +12,15 @@ const (
 
 func main() {
 	fmt.Println(eur_to_rub)
+
+}
+
+func readUserInput() (amount float64) {
+	fmt.Scan(&amount)
+	return
+}
+
+func convertCurrency(amount float64, currencyFrom string, currencyTo string) float64 {
+	fmt.Printf("selected currencyes %s %s", currencyFrom, currencyTo)
+	return amount
 }
