@@ -46,6 +46,10 @@ func getMenuChoice() (choice int) {
 }
 
 func displayBookmarks(bookmarks map[string]string) {
+	if len(bookmarks) == 0 {
+		fmt.Println("Закладок нет")
+		return
+	}
 	fmt.Println("Закладки:")
 	for name, url := range bookmarks {
 		fmt.Printf("- %s: %s\n", name, url)
