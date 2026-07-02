@@ -5,15 +5,36 @@ import (
 )
 
 const (
-	usd_to_eur = 0.878
-	usd_to_rub = 73.76
-	eur_to_rub = usd_to_rub / usd_to_eur
+	usd = "usd"
+	eur = "eur"
+	rub = "rub"
 )
+
+type Rate = map[string]float64
+type CurrencyRate = map[string]Rate
+
+var currencyFromRate = CurrencyRate{
+	usd: Rate{
+		usd: 1.0,
+		eur: 0.878,
+		rub: 73.76,
+	},
+	eur: Rate{
+		usd: 1.14,
+		eur: 1.0,
+		rub: 87.65,
+	},
+	rub: Rate{
+		usd: 0.013,
+		eur: 0.011,
+		rub: 1.0,
+	},
+}
 
 func main() {
 	amount, currencyFrom, currencyTo := readUserInput()
 	convertedAmount := convertCurrency(amount, currencyFrom, currencyTo)
-	fmt.Printf("Результат конвертации: %.2f %s = %.2f %s", amount, currencyFrom, convertedAmount, currencyTo)
+	fmt.Printf("Результат конвертации: %.2f %s = %.2f %s\n", amount, currencyFrom, convertedAmount, currencyTo)
 }
 
 func readUserInput() (amount float64, currencyFrom string, currencyTo string) {
@@ -54,22 +75,10 @@ func readUserInput() (amount float64, currencyFrom string, currencyTo string) {
 	return
 }
 
-func convertCurrency(amount float64, currencyFrom string, currencyTo string) (convertedAmount float64) {
-	switch {
-	case currencyFrom == "usd" && currencyTo == "eur":
-		convertedAmount = amount * usd_to_eur
-	case currencyTo == "usd" && currencyFrom == "eur":
-		convertedAmount = amount / usd_to_eur
-	case currencyFrom == "usd" && currencyTo == "rub":
-		convertedAmount = amount * usd_to_rub
-	case currencyTo == "usd" && currencyFrom == "rub":
-		convertedAmount = amount / usd_to_rub
-	case currencyFrom == "eur" && currencyTo == "rub":
-		convertedAmount = amount * eur_to_rub
-	case currencyTo == "eur" && currencyFrom == "rub":
-		convertedAmount = amount / eur_to_rub
-	default:
-		convertedAmount = amount
-	}
-	return
+func convertCurrency(amount float64, currencyFrom string, currencyTo string) float64 {
+	return amount * getCurrencyRate(currencyFrom, currencyTo)
+}
+
+func getCurrencyRate(currencyFrom string, currencyTo string) float64 {
+	return currencyFromRate[currencyFrom][currencyTo]
 }
