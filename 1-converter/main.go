@@ -13,27 +13,26 @@ const (
 type Rate = map[string]float64
 type CurrencyRate = map[string]Rate
 
-var currencyFromRate = CurrencyRate{
-	usd: Rate{
-		usd: 1.0,
-		eur: 0.878,
-		rub: 73.76,
-	},
-	eur: Rate{
-		usd: 1.14,
-		eur: 1.0,
-		rub: 87.65,
-	},
-	rub: Rate{
-		usd: 0.013,
-		eur: 0.011,
-		rub: 1.0,
-	},
-}
-
 func main() {
+	currencyFromRate := CurrencyRate{
+		usd: Rate{
+			usd: 1.0,
+			eur: 0.878,
+			rub: 73.76,
+		},
+		eur: Rate{
+			usd: 1.14,
+			eur: 1.0,
+			rub: 87.65,
+		},
+		rub: Rate{
+			usd: 0.013,
+			eur: 0.011,
+			rub: 1.0,
+		},
+	}
 	amount, currencyFrom, currencyTo := readUserInput()
-	convertedAmount := convertCurrency(amount, currencyFrom, currencyTo)
+	convertedAmount := convertCurrency(amount, currencyFrom, currencyTo, &currencyFromRate)
 	fmt.Printf("Результат конвертации: %.2f %s = %.2f %s\n", amount, currencyFrom, convertedAmount, currencyTo)
 }
 
@@ -75,10 +74,10 @@ func readUserInput() (amount float64, currencyFrom string, currencyTo string) {
 	return
 }
 
-func convertCurrency(amount float64, currencyFrom string, currencyTo string) float64 {
-	return amount * getCurrencyRate(currencyFrom, currencyTo)
+func convertCurrency(amount float64, currencyFrom string, currencyTo string, currencyFromRate *CurrencyRate) float64 {
+	return amount * getCurrencyRate(currencyFrom, currencyTo, currencyFromRate)
 }
 
-func getCurrencyRate(currencyFrom string, currencyTo string) float64 {
-	return currencyFromRate[currencyFrom][currencyTo]
+func getCurrencyRate(currencyFrom string, currencyTo string, currencyFromRate *CurrencyRate) float64 {
+	return (*currencyFromRate)[currencyFrom][currencyTo]
 }
